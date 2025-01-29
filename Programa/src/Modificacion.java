@@ -3,14 +3,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class Main {
+public class Modificacion {
 
     public static void main(String[] args) {
-        new Main().metodoPrincipal();
+        new Modificacion().metodoPrincipal();
     }
 
     private void metodoPrincipal() {
-        String[] productos = {"probando", "hola"};
+        String[] productos = {"probando", "hola","hola"};
         menu(productos);
     }
 
