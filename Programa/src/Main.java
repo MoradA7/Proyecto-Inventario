@@ -9,6 +9,7 @@ public class Main {
 
     private void metodoPrincipal() {
         String[] productos = {"probando", "hola"};
+        Eliminacion eli = new Eliminacion();
         menu(productos);
     }
 
@@ -30,6 +31,12 @@ public class Main {
                 case 2:
                     modifyProduct(productos);
                     repeticion(productos);
+                    break;
+                case 3:
+                    eliminarNombre(productos);
+                    break;
+                case 4:
+                    eliminarPosicion(productos);
                     break;
                 default:
                     System.out.println("ADIÓS");
@@ -57,6 +64,19 @@ public class Main {
             producto = null;
         }
         return producto;
+    }
+
+    //FUNCIÓN QUE PIDE UN STRING
+    private int pedirInt() {
+        int num;
+        try {
+            Scanner sc = new Scanner(System.in);
+            num = sc.nextInt();
+        } catch (Exception e) {
+            System.err.println("NO HAS PUESTO UN NÚMERO VÁLIDO");
+            num = 0;
+        }
+        return num;
     }
 
     //FUNCIÓN PARA AÑADIR PRODUCTO
@@ -107,5 +127,35 @@ public class Main {
         }
 
         return productos;
+    }
+
+    //Eliminar
+    public String[] eliminarNombre(String[] array){
+        //Dialogo
+        System.out.println("Pon el nombre que quieras eliminar");
+        String nombre = pedirString();
+        int num = Arrays.binarySearch(array,nombre);
+
+        if (num <0){
+            System.out.println("NO EXISTE EL PRODUCTO");
+        }else {
+            array = eliminar(array,num);
+        }
+        return array;
+    }
+
+    public String[] eliminarPosicion(String[] array){
+        System.out.println("Escribe la posicion que quieras eliminar");
+        int num = pedirInt();
+
+        array = eliminar(array,num);
+        return array;
+    }
+
+    private String[] eliminar(String[] array, int posicion){
+        //codigo que elimina el producto
+
+        System.out.println("HAS ELIMINADO CON ÉXITO");
+        return array;
     }
 }
