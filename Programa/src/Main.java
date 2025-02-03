@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
@@ -8,19 +10,25 @@ public class Main {
     }
 
     private void metodoPrincipal() {
-        String[] productos = {"probando", "hola"};
-        Eliminacion eli = new Eliminacion();
+        String[] productos = {"probando", "hola", "hola"};
         menu(productos);
     }
 
     private void menu(String[] productos) {
         Scanner sc = new Scanner(System.in);
         int opcion = 0;
-        while (opcion != 5) {
+        while (opcion != 10) {
             System.out.println("-----MENÚ-----");
             System.out.println("1. AÑADIR PRODUCTO.");
-            System.out.println("2. MODIFICAR PRODUCTO (POR NOMBRE).");
-            System.out.println("5. SALIR");
+            System.out.println("2. ELIMINAR UN PRODUCTO (POR NOMBRE).");
+            System.out.println("3. ELIMINAR UN PRODUCTO (POR POSICIÓN).");
+            System.out.println("4. MOSTRAR TODA LA LISTA DE PRODUCTOS.");
+            System.out.println("5. MOSTRAR UN RESUMEN DE TODO EL INVENTARIO.");
+            System.out.println("6. MODIFICAR PRODUCTO (POR NOMBRE).");
+            System.out.println("7. SUSTITUIR UN PRODUCTO POR OTRO (POR POSICIÓN)");
+            System.out.println("8. ESCRIBIR LOS PRODUCTOS EN EL FICHERO DE TEXTO");
+            System.out.println("9. ACTUALIZAR LOS PRODUCTOS CON EL FICHERO DE TEXTO");
+            System.out.println("10. SALIR");
             System.out.println("--------------");
             opcion = sc.nextInt();
             switch (opcion) {
@@ -29,18 +37,34 @@ public class Main {
                     repeticion(productos);
                     break;
                 case 2:
+                    productos = eliminarNombre(productos);
+                    break;
+                case 3:
+                    productos = eliminarPosicion(productos);
+                    break;
+                case 4:
+                    mostrarLista(productos);
+                    break;
+                case 5:
+                    mostrarResumen(productos);
+                    break;
+                case 6:
                     modifyProduct(productos);
                     repeticion(productos);
                     break;
-                case 3:
-                    eliminarNombre(productos);
+                case 7:
+                    sustituirProduct(productos);
+                    repeticion(productos);
                     break;
-                case 4:
-                    eliminarPosicion(productos);
+                case 8:
+                    escribirEnFichero(productos);
+                    break;
+                case 9:
+                    productos = lecturaEnFichero();
                     break;
                 default:
                     System.out.println("ADIÓS");
-                    opcion = 5;
+                    opcion = 10;
                     break;
             }
         }
@@ -51,6 +75,10 @@ public class Main {
         for (int i = 0; i < productos.length; i++) {
             System.out.println(productos[i]);
         }
+    }
+
+    private void espacioBlanco() {
+        System.out.println("\n\n");
     }
 
     //FUNCIÓN QUE PIDE UN STRING
@@ -66,7 +94,7 @@ public class Main {
         return producto;
     }
 
-    //FUNCIÓN QUE PIDE UN STRING
+    //FUNCIÓN QUE PIDE UN ENTERO
     private int pedirInt() {
         int num;
         try {
@@ -91,6 +119,77 @@ public class Main {
         productos[productos.length - 1] = producto;
 
         return productos;
+    }
+
+    //FUNCIÓN PARA ELIMINAR UN PRODUCTO POR NOMBRE
+    public String[] eliminarNombre(String[] array) {
+        //Dialogo
+        System.out.println("ESCRIBE EL NOMBRE DEL PRODUCTO QUE QUIERAS ELIMINAR: ");
+        String nombre = pedirString();
+        nombre = nombre.toLowerCase();
+
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(nombre)) {
+                array = eliminar(array, i);
+                return array;
+            }
+        }
+        System.out.println("PRODUCTO NO ENCONTRADO");
+        return array;
+    }
+
+    //FUNCIÓN CON DIÁLOGO PARA ELIMINAR UN PRODUCTO POR POSICIÓN
+    public String[] eliminarPosicion(String[] array) {
+        System.out.println("ESCRIBE LA POSICIÓN DEL PRODUCTO QUE QUIERAS ELIMINAR: ");
+        int num = pedirInt();
+        if (num < 0 || num >= array.length) {
+            System.out.println("PRODUCTO NO ENCONTRADO");
+        } else {
+            array = eliminar(array, num);
+        }
+        return array;
+    }
+
+    //FUNCIÓN PARA ELIMINAR UN PRODUCTO DE LA LISTA POR POSICIÓN
+    private String[] eliminar(String[] array, int posicion) {
+        //codigo que elimina el producto
+        String[] productos = new String[array.length - 1];
+        if (posicion == 0){
+            System.arraycopy(array,1,productos,0,array.length-1);
+        }else if (posicion == array.length - 1){
+            productos = Arrays.copyOf(array,array.length - 1);
+        }else {
+            System.arraycopy(array,0,productos,0,posicion);
+            System.arraycopy(array,posicion+1,productos,posicion,array.length-posicion-1);
+        }
+        System.out.println("PRODUCTO ELIMINADO CON ÉXITO");
+        return productos;
+    }
+
+    //FUNCIÓN PARA MOSTRAR TODA LA LISTA DE PRODUCTOS
+    private void mostrarLista(String[] productos) {
+       try{
+           System.out.print("\nPRODUCTOS: ");
+           for (int i = 0; i < productos.length - 1; i++) {
+               System.out.print(productos[i] + ", ");
+           }
+           System.out.println(productos[productos.length - 1] + ".");
+           espacioBlanco();
+       }catch (Exception e){
+           System.out.println("NO HAY PRODUCTOS.");
+       }
+
+    }
+
+    //FUNCIÓN QUE MUESTRA EL RESUMEN DEL INVENTARIO, NOMBRE Y SU CANTIDAD
+    private void mostrarResumen(String[] productos) {
+        Map<String, Integer> contador = new HashMap<>();
+        for (String producto : productos) {
+            contador.put(producto, contador.getOrDefault(producto, 0) + 1);
+        }
+        for (Map.Entry<String, Integer> input : contador.entrySet()) {
+            System.out.printf("%s: %d\n", input.getKey(), input.getValue());
+        }
     }
 
     //FUNCIÓN PARA MODIFICAR PRODUCTO
@@ -125,37 +224,46 @@ public class Main {
         if (contador == 0) {
             System.out.println("NO SE HA ENCONTRADO NINGUN PRODUCTO CON EL NOMBRE " + producto);
         }
-
         return productos;
     }
 
-    //Eliminar
-    public String[] eliminarNombre(String[] array){
-        //Dialogo
-        System.out.println("Pon el nombre que quieras eliminar");
-        String nombre = pedirString();
-        int num = Arrays.binarySearch(array,nombre);
+    //FUNCIÓN QUE SUSTITUYE UN PRODUCTO POR OTRO POR POSICIÓN CON DIÁLOGO
+    private void sustituirProduct(String[] productos) {
+        System.out.println("ESCRIBE LA POSICIÓN DEL PRODUCTO QUE QUIERES CAMBIAR: ");
+        int pos = pedirInt();
+        System.out.println("ESCRIBE LA POSICIÓN DEL PRODUCTO POR EL QUE QUIERES CAMBIAR: ");
+        int posDos = pedirInt();
+        sustituir(productos, pos, posDos);
+    }
 
-        if (num <0){
-            System.out.println("NO EXISTE EL PRODUCTO");
+    //FUNCIÓN QUE SUSTITUYE UN PRODUCTO POR OTRO POR POSICIÓN
+    private void sustituir(String[] productos, int pos, int posDos) {
+        if (pos < 0 || posDos < 0 || pos >= productos.length || posDos >= productos.length) {
+            System.out.println("PRODUCTO NO ENCONTRADO");
         }else {
-            array = eliminar(array,num);
+            String prod = productos[pos];
+            productos[pos] = productos[posDos];
+            productos[posDos] = prod;
         }
-        return array;
     }
 
-    public String[] eliminarPosicion(String[] array){
-        System.out.println("Escribe la posicion que quieras eliminar");
-        int num = pedirInt();
+    private void escribirEnFichero(String[] productos) {
+        FicheroEscribir escribir = new FicheroEscribir();
+        String nombreFichero = "productos.txt";
 
-        array = eliminar(array,num);
-        return array;
+        //DATOS A ESCRIBIR
+
+        escribir.arrayEnFichero(nombreFichero,productos,productos.length);
+
+        System.out.println("PRODUCTOS GUARDADOS CORRECTAMENTE EN EL FICHERO "+nombreFichero);
     }
 
-    private String[] eliminar(String[] array, int posicion){
-        //codigo que elimina el producto
+    private String[] lecturaEnFichero() {
+        FicheroLectura lectura = new FicheroLectura();
+        String nombreFichero = "productos.txt";
 
-        System.out.println("HAS ELIMINADO CON ÉXITO");
-        return array;
+        //DATOS A LEER
+        String[] productos = lectura.leerFichero(nombreFichero);
+        return productos;
     }
 }
