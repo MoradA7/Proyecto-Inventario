@@ -10,14 +10,14 @@ public class Main {
     }
 
     private void metodoPrincipal() {
-        String[] productos = {"probando", "hola", "hola"};
+        String[] productos = lecturaEnFichero();
         menu(productos);
     }
 
     private void menu(String[] productos) {
         Scanner sc = new Scanner(System.in);
         int opcion = 0;
-        while (opcion != 10) {
+        while (opcion != 8) {
             System.out.println("-----MENÚ-----");
             System.out.println("1. AÑADIR PRODUCTO.");
             System.out.println("2. ELIMINAR UN PRODUCTO (POR NOMBRE).");
@@ -26,9 +26,7 @@ public class Main {
             System.out.println("5. MOSTRAR UN RESUMEN DE TODO EL INVENTARIO.");
             System.out.println("6. MODIFICAR PRODUCTO (POR NOMBRE).");
             System.out.println("7. SUSTITUIR UN PRODUCTO POR OTRO (POR POSICIÓN)");
-            System.out.println("8. ESCRIBIR LOS PRODUCTOS EN EL FICHERO DE TEXTO");
-            System.out.println("9. ACTUALIZAR LOS PRODUCTOS CON EL FICHERO DE TEXTO");
-            System.out.println("10. SALIR");
+            System.out.println("8. SALIR");
             System.out.println("--------------");
             opcion = sc.nextInt();
             switch (opcion) {
@@ -56,15 +54,10 @@ public class Main {
                     sustituirProduct(productos);
                     repeticion(productos);
                     break;
-                case 8:
-                    escribirEnFichero(productos);
-                    break;
-                case 9:
-                    productos = lecturaEnFichero();
-                    break;
                 default:
+                    escribirEnFichero(productos);
                     System.out.println("ADIÓS");
-                    opcion = 10;
+                    opcion = 8;
                     break;
             }
         }
